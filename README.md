@@ -1,43 +1,37 @@
-# Sprint-Data_Science
+# Sprint Data Science
 
-Reusable preprocessing pipeline for CSV datasets.
+Projeto desenvolvido para realizar um tratamento inicial em um arquivo CSV utilizando Python e Pandas.
 
-## What it does
+## Objetivo
 
-- Reads large CSVs in chunks, so files do not need to fit fully in memory.
-- Works with different CSV schemas through JSON configuration.
-- Normalizes column names, trims string fields, handles missing values, coerces types, parses dates, and optimizes low-cardinality text columns.
-- Writes a manifest beside the processed data with row counts, output columns, and run metadata.
+O objetivo deste projeto é ler um arquivo CSV bruto, aplicar algumas etapas básicas de limpeza e salvar uma nova versão tratada do arquivo.
 
-## Quick start
+O arquivo original fica na pasta `data/raw` e o arquivo tratado é salvo na pasta `data/processed`.
 
-Profile a CSV before processing:
+## O que o código faz
 
-```powershell
-python csv_preprocessor.py --config configs/example_preprocess.json --profile --profile-rows 1000
-```
+- Lê um arquivo CSV utilizando a biblioteca Pandas.
+- Usa `latin-1` para conseguir ler caracteres especiais que podem não funcionar em UTF-8.
+- Considera a vírgula como separador das colunas.
+- Usa um leitor mais flexível do Pandas para lidar melhor com textos grandes no CSV.
+- Ignora linhas com quantidade incorreta de colunas.
+- Padroniza os nomes das colunas:
+  - remove espaços;
+  - transforma tudo em letras minúsculas;
+  - troca espaços por underline.
+- Remove linhas duplicadas.
+- Remove espaços extras no início e no fim de campos de texto.
+- Substitui valores vazios ou inválidos por `NA`.
+- Salva o CSV tratado na pasta `data/processed`.
 
-Run preprocessing:
+## Estrutura do projeto
 
-```powershell
-python csv_preprocessor.py --config configs/example_preprocess.json
-```
-
-Use it for another CSV without changing code:
-
-```powershell
-python csv_preprocessor.py --input path/to/input.csv --output data/processed/output.csv
-```
-
-For custom parsing, types, date columns, or missing-value rules, copy
-`configs/example_preprocess.json` and edit the JSON.
-
-## Configuration options
-
-- `read_csv`: options passed to `pandas.read_csv`, such as `sep`, `encoding`, `quotechar`, `decimal`, `thousands`, and `on_bad_lines`.
-- `select_columns`, `drop_columns`, `rename_columns`: schema-specific column controls.
-- `dtype_overrides`: explicit type conversions, for example `string`, `Int64`, `float`, or `boolean`.
-- `datetime_columns`: map of column name to date format. Use `null` to let pandas infer the format.
-- `missing_values`: per-column strategy. Supported values are `drop`, `median`, `mean`, `mode`, or a literal fill value.
-- `chunksize`: number of rows processed at a time.
-- `output_format`: `csv` or `parquet`.
+```text
+Sprint-Data_Science/
+├── data/
+│   ├── raw/
+│   │   └── ANON_nome_transcricao.csv
+│   └── processed/
+│       └── csv_tratado.csv
+├── csv_preprocessor.py
+└── README.md
